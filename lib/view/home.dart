@@ -16,8 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: const Color(0xfffc7a392),
+      ),
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading) {

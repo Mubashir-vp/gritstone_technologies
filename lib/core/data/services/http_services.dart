@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:gritstone_technologies/core/model/product_model.dart';
@@ -22,7 +21,6 @@ class HttpServices {
         String productString = productResponse.body;
         String categoryString = categoryResponse.body;
         ProductModel productData = productModelFromJson(productString);
-        log('Length${productData.products!.length}');
         ProductModel categoryData = productModelFromJson(categoryString);
         return (productData, categoryData);
       } else {
