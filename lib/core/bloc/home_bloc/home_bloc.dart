@@ -14,62 +14,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoading()) {
     on<LoadData>((event, emit) async {
       emit(HomeLoading());
-      var response = await HttpServices().fetchProducts();
-      if (response != null) {
-        List<LocalProduct> products = response.$1.products!.map(
-          (e) {
-            return LocalProduct(
-              id: e.id,
-              title: e.title,
-              description: e.description,
-              price: e.price,
-              discountPercentage: e.discountPercentage,
-              rating: e.rating,
-              stock: e.stock,
-              brand: e.brand,
-              category: e.category,
-              thumbnail: e.thumbnail,
-              images: e.images,
-            );
-          },
-        ).toList();
-        List<LocalProduct> category = response.$2.products!.map(
-          (e) {
-            return LocalProduct(
-              id: e.id,
-              title: e.title,
-              description: e.description,
-              price: e.price,
-              discountPercentage: e.discountPercentage,
-              rating: e.rating,
-              stock: e.stock,
-              brand: e.brand,
-              category: e.category,
-              thumbnail: e.thumbnail,
-              images: e.images,
-            );
-          },
-        ).toList();
-
-        await DataBaseServices().addData(
-          product: HiveModel(products: products, category: category),
+      HiveModel? hiveModel = DataBaseServices().getData();
+      if (hiveModel == null) {
+        HomeState response = await HttpServices().fetchProducts();
+        emit(response);
+      } else {
+        List<LocalProduct> combinedList = filterList(
+          category: hiveModel.category,
+          products: hiveModel.products,
         );
-        HiveModel hiveModel = DataBaseServices().getData();
-        int productIndex = 0;
-        int categoryIndex = 0;
-        List<LocalProduct> combinedList = [];
-        for (int i = 1;
-            i <= (hiveModel.products.length + hiveModel.category.length);
-            i++) {
-          if (i % 6 == 0 && hiveModel.category.length >= categoryIndex) {
-            combinedList.add(hiveModel.category[categoryIndex]);
-            categoryIndex++;
-          } else if (hiveModel.products.length - 1 >= productIndex) {
-            combinedList.add(hiveModel.products[productIndex]);
-            productIndex++;
-          }
-        }
-
         emit(
           DataLoaded(
             products: combinedList,
@@ -77,5 +30,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
       }
     });
+  }
+  List<LocalProduct> filterList(
+      {required List<LocalProduct> category,
+      required List<LocalProduct> products}) {
+    int productIndex = 0;
+    int categoryIndex = 0;
+    List<LocalProduct> combinedList = [];
+    for (int i = 1; i <= (products.length + category.length); i++) {
+      if (i % 6 == 0 && category.length >= categoryIndex) {
+        combinedList.add(category[categoryIndex]);
+        categoryIndex++;
+      } else if (products.length - 1 >= productIndex) {
+        combinedList.add(products[productIndex]);
+        productIndex++;
+      }
+    }
+    return combinedList;
   }
 }

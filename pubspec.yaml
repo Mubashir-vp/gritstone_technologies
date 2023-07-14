@@ -44,6 +44,13 @@ dependencies:
   path_provider: ^2.0.15
   equatable: ^2.0.5
   carousel_slider: ^4.2.1
+  connectivity_plus: ^4.0.1
+  flutter_background_service: ^3.0.1
+  permission_handler: ^10.4.3
+  geolocator: ^9.0.2
+  flutter_background_service_android: ^4.0.1
+  battery_plus: ^4.0.1
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:
